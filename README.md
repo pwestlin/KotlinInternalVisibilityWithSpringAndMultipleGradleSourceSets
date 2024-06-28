@@ -24,4 +24,5 @@ Heavily inspired by an [example from Spring Modulith](https://github.com/spring-
 ### IntelliJ
 IntelliJ has [a bug](https://youtrack.jetbrains.com/issue/KTIJ-7662/IDE-support-internal-visibility-introduced-by-associated-compilations) so that tests cannot recognize internal classes/functions/stuff from other sourcesets even if they are configured to do so in Gradle:
 ```kotlin
+kotlin.target.compilations.filterNot { it.name in listOf("main", "test") }.forEach { kotlin.target.compilations.getByName("test").associateWith(it) }
 ```
