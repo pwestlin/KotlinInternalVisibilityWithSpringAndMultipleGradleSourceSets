@@ -60,7 +60,7 @@ dependencies {
 
 // För att "test" ska få åtkomst till de saker som är märkta "internal" i andra sourcesets
 //kotlin.target.compilations.getByName("test").associateWith(kotlin.target.compilations.getByName(orderSrcSet))
-// Tests should recignize internal classes/functions/stuff from other modules.
+// Tests should recognize internal classes/functions/stuff from other modules.
 kotlin.target.compilations.filterNot { it.name in listOf("main", "test") }.forEach { kotlin.target.compilations.getByName("test").associateWith(it) }
 
 kotlin {
