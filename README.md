@@ -27,3 +27,11 @@ IntelliJ has [a bug](https://youtrack.jetbrains.com/issue/KTIJ-7662/IDE-support-
 kotlin.target.compilations.filterNot { it.name in listOf("main", "test") }
     .forEach { kotlin.target.compilations.getByName("test").associateWith(it) }
 ```
+
+The solution, for now, is to suppress the error in every test class...
+```kotlin
+@Suppress("invisible_reference", "invisible_member")
+class DefaultInventoryRepositoryTest {
+    ...
+}
+```
