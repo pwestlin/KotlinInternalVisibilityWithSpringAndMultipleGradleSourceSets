@@ -16,7 +16,7 @@ Module dependencies:
 
 ![title](modules.png)
 
-Every module exposes only public classes/funtions/other so internal things are marked `internal`.
+Every module exposes only public classes/functions/other so internal things are marked `internal`.
 
 ### Inspiration
 Heavily inspired by an [example from Spring Modulith](https://github.com/spring-projects/spring-modulith/tree/main/spring-modulith-examples/spring-modulith-example-full). :)
