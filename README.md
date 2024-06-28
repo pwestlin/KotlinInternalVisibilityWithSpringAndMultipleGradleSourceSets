@@ -4,11 +4,28 @@ Handling Kotlin internal visibility with multiple Gradle sourcesets.
 ## Motivation
 Trying out [modularization](https://en.wikipedia.org/wiki/Modular_programming) in a Spring Boot monolith by using [Kotlin internal visibility modifier](https://kotlinlang.org/docs/visibility-modifiers.html) and multiple sourcesets in [Gradle](https://gradle.org/).
 
+## Implementation
 
-## Inspiration
+The application is a Spring Boot command line application with four "modules" (Gradle sourcesets):
+* main
+* order
+* inventory
+* test
+
+Module dependencies:
+![title](modules.png)
+
+Every module exposes only public classes/funtions/other so internal things is marked `internal`.
+
+* `main` is the main starting point of the application.
+* `order` har order-specific functionality.
+* `inventory` har order-specific functionality.
+* `test` unit tests for all other modules.
+
+### Inspiration
 Heavily inspired by an [example from Spring Modulith](https://github.com/spring-projects/spring-modulith/tree/main/spring-modulith-examples/spring-modulith-example-full). :)
 
-## IntelliJ
+### IntelliJ
 IntelliJ has [a bug](https://youtrack.jetbrains.com/issue/KTIJ-7662/IDE-support-internal-visibility-introduced-by-associated-compilations) so that tests cannot recognize internal classes/functions/stuff from other sourcesets even if they are configured to do so in Gradle:
 ```kotlin
 ```

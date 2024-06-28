@@ -50,11 +50,8 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     springBootStarterDependency("${orderSrcSet}Implementation")
-
-    //"${orderSrcSet}Implementation"("org.springframework.boot:spring-boot-starter")
-
-    //"${inventorySrcSet}Implementation"("org.springframework.boot:spring-boot-starter")
     springBootStarterDependency("${inventorySrcSet}Implementation")
+
     "${inventorySrcSet}Implementation"(sourceSets.named(orderSrcSet).get().output)
 }
 
