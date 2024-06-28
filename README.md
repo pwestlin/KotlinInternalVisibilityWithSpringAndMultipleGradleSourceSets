@@ -7,21 +7,16 @@ Trying out [modularization](https://en.wikipedia.org/wiki/Modular_programming) i
 ## Implementation
 
 The application is a Spring Boot command line application with four "modules" (Gradle sourcesets):
-* main
-* order
-* inventory
-* test
+* `main` is the main starting point of the application.
+* `order` har order-specific functionality.
+* `inventory` har order-specific functionality.
+* `test` unit tests for all other modules.
 
 Module dependencies:
 
 ![title](modules.png)
 
 Every module exposes only public classes/funtions/other so internal things are marked `internal`.
-
-* `main` is the main starting point of the application.
-* `order` har order-specific functionality.
-* `inventory` har order-specific functionality.
-* `test` unit tests for all other modules.
 
 ### Inspiration
 Heavily inspired by an [example from Spring Modulith](https://github.com/spring-projects/spring-modulith/tree/main/spring-modulith-examples/spring-modulith-example-full). :)
