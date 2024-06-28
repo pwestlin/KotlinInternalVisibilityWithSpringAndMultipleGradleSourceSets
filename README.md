@@ -13,9 +13,10 @@ The application is a Spring Boot command line application with four "modules" (G
 * test
 
 Module dependencies:
+
 ![title](modules.png)
 
-Every module exposes only public classes/funtions/other so internal things is marked `internal`.
+Every module exposes only public classes/funtions/other so internal things are marked `internal`.
 
 * `main` is the main starting point of the application.
 * `order` har order-specific functionality.
