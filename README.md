@@ -8,8 +8,8 @@ Trying out [modularization](https://en.wikipedia.org/wiki/Modular_programming) i
 
 The application is a Spring Boot command line application with four "modules" (Gradle sourcesets):
 * `main` is the main starting point of the application.
-* `order` har order-specific functionality.
-* `inventory` har order-specific functionality.
+* `order` has order-specific functionality.
+* `inventory` has order-specific functionality.
 * `test` unit tests for all other modules.
 
 Module dependencies:
