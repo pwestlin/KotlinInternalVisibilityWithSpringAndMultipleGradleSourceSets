@@ -28,7 +28,7 @@ kotlin.target.compilations.filterNot { it.name in listOf("main", "test") }
     .forEach { kotlin.target.compilations.getByName("test").associateWith(it) }
 ```
 
-The solution, for now, is to suppress the error in every test class...
+The solution, for now, is to suppress the error in _every_ test class...
 ```kotlin
 @Suppress("invisible_reference", "invisible_member")
 class DefaultInventoryRepositoryTest {
