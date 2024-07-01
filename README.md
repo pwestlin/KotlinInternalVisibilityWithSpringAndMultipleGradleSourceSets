@@ -16,13 +16,13 @@ Module dependencies:
 
 ![title](modules.png)
 
-Every module exposes only public classes/functions/other so internal things are marked `internal`.
+Every module exposes only public classes/functions/other. Internal things are marked `internal`.
 
 ### Application inspiration
 Heavily inspired by an [example from Spring Modulith](https://github.com/spring-projects/spring-modulith/tree/main/spring-modulith-examples/spring-modulith-example-full). :)
 
 ### IntelliJ
-IntelliJ has [a bug](https://youtrack.jetbrains.com/issue/KTIJ-7662/IDE-support-internal-visibility-introduced-by-associated-compilations) so that tests cannot recognize internal classes/functions/stuff from other sourcesets even if they are configured to do so in Gradle:
+IntelliJ has [a bug](https://youtrack.jetbrains.com/issue/KTIJ-7662/IDE-support-internal-visibility-introduced-by-associated-compilations) that makes tests not recognize internal classes/functions/stuff from other sourcesets even if they are configured in Gradle to do just that:
 ```kotlin
 kotlin.target.compilations.filterNot { it.name in listOf("main", "test") }
     .forEach { kotlin.target.compilations.getByName("test").associateWith(it) }
