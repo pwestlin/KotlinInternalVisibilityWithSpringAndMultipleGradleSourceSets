@@ -1,7 +1,7 @@
 plugins {
-    id("org.springframework.boot") version "3.3.1"
-    id("io.spring.dependency-management") version "1.1.5"
-    "2.0.0".let { kotlinVersion ->
+    id("org.springframework.boot") version "3.4.1"
+    id("io.spring.dependency-management") version "1.1.7"
+    "2.1.0".let { kotlinVersion ->
         kotlin("jvm") version kotlinVersion
         kotlin("plugin.spring") version kotlinVersion
     }
@@ -23,10 +23,12 @@ repositories {
 
 private val orderSrcSet = "order"
 private val inventorySrcSet = "inventory"
+private val statisticsSrcSet = "statistics"
 
 sourceSets {
     create(orderSrcSet)
     create(inventorySrcSet)
+    create(statisticsSrcSet)
 }
 
 // "Group" for spring-boot-starter so that they can be imported to other sourcesets than main.
@@ -51,12 +53,14 @@ dependencies {
 
     springBootStarterDependency("${orderSrcSet}Implementation")
     springBootStarterDependency("${inventorySrcSet}Implementation")
+    springBootStarterDependency("${statisticsSrcSet}Implementation")
 
     "${inventorySrcSet}Implementation"(sourceSets.named(orderSrcSet).get().output)
+    "${inventorySrcSet}Implementation"(sourceSets.named(statisticsSrcSet).get().output)
+
+    "${orderSrcSet}Implementation"(sourceSets.named(statisticsSrcSet).get().output)
 }
 
-// För att "test" ska få åtkomst till de saker som är märkta "internal" i andra sourcesets
-//kotlin.target.compilations.getByName("test").associateWith(kotlin.target.compilations.getByName(orderSrcSet))
 // Tests should recognize internal classes/functions/stuff from other modules.
 kotlin.target.compilations.filterNot { it.name in listOf("main", "test") }
     .forEach { kotlin.target.compilations.getByName("test").associateWith(it) }
@@ -68,7 +72,7 @@ kotlin {
 }
 
 /**
- * Kör enhetstester.
+ * Runs unit tests and prints a report.
  */
 tasks.withType<Test> {
     useJUnitPlatform()
@@ -101,7 +105,7 @@ tasks.withType<Test> {
 
 
 /**
- * Task för att skriva ut källkod, outputs och dependencies för alla SourceSets.
+ * Task printing source code locations, outputs och dependencies for all SourceSets.
  */
 tasks.register("printSourceSetInformation") {
     doLast {
