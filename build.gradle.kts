@@ -1,7 +1,7 @@
 plugins {
-    id("org.springframework.boot") version "3.4.1"
+    id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
-    "2.1.0".let { kotlinVersion ->
+    "2.1.10".let { kotlinVersion ->
         kotlin("jvm") version kotlinVersion
         kotlin("plugin.spring") version kotlinVersion
     }
@@ -42,12 +42,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation(sourceSets.named(orderSrcSet).get().output)
 
-    // Denna behövs för att Spring ska förstå att det finns springbönor i modulen inventorySrcSet.
+    // Needed for Spring so it can find Spring beans in inventorySrcSet.
     runtimeOnly(sourceSets.named(inventorySrcSet).get().output)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("io.mockk:mockk:1.13.11")
+    testImplementation("io.mockk:mockk:1.13.16")
     testImplementation("io.kotest:kotest-assertions-core-jvm:5.9.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
@@ -62,7 +62,8 @@ dependencies {
 }
 
 // Tests should recognize internal classes/functions/stuff from other modules.
-kotlin.target.compilations.filterNot { it.name in listOf("main", "test") }
+kotlin.target.compilations
+    .filterNot { it.name in listOf("main", "test") }
     .forEach { kotlin.target.compilations.getByName("test").associateWith(it) }
 
 kotlin {
