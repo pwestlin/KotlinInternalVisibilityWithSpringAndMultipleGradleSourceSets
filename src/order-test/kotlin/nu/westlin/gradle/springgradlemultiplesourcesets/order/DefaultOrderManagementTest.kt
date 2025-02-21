@@ -6,18 +6,14 @@ import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.context.ApplicationEventPublisher
 
-// IntelliJ has a bug so that it doesn't recognize
-// kotlin.target.compilations.getByName("test").associateWith(kotlin.target.compilations.getByName(orderSrcSet))
-// from build.gradle.kts :/
-@Suppress("invisible_reference", "invisible_member")
+@Suppress("invisible_reference") // <- Because of a bug in IntelliJ (see README.md)
 class DefaultOrderManagementTest {
-
     private val eventPublisher: ApplicationEventPublisher = mockk()
 
     private val orderManagement = DefaultOrderManagement(eventPublisher)
 
     @Test
-    fun `complete order`() {
+    fun `complete order 2`() {
         val order = Order(OrderId())
         val orderCompletedEvent = OrderCompleted(order.id)
         justRun { eventPublisher.publishEvent(orderCompletedEvent) }
@@ -26,4 +22,5 @@ class DefaultOrderManagementTest {
 
         verify { eventPublisher.publishEvent(orderCompletedEvent) }
     }
+
 }

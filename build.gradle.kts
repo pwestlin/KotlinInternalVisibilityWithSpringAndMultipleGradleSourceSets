@@ -21,44 +21,89 @@ repositories {
     mavenCentral()
 }
 
-private val orderSrcSet = "order"
-private val inventorySrcSet = "inventory"
-private val statisticsSrcSet = "statistics"
+private lateinit var orderSrcSet: SourceSet
+private lateinit var orderTestSrcSet: SourceSet
+private lateinit var inventorySrcSet: SourceSet
+private lateinit var inventoryTestSrcSet: SourceSet
+private lateinit var statisticsSrcSet: SourceSet
+private lateinit var statisticsTestSrcSet: SourceSet
 
 sourceSets {
-    create(orderSrcSet)
-    create(inventorySrcSet)
-    create(statisticsSrcSet)
+    orderSrcSet = create("order")
+    orderTestSrcSet = create("order-test")
+    inventorySrcSet = create("inventory")
+    inventoryTestSrcSet = create("inventory-test")
+    statisticsSrcSet = create("statistics")
+    statisticsTestSrcSet = create("statistics-test")
 }
+
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+
+        // To get IntelliJ to mark "order-test" as a "test source" and not a "source"..
+        testSources.from(
+            project.sourceSets.first { it.name == orderTestSrcSet.name }.kotlin.srcDirs,
+            project.sourceSets.first { it.name == inventoryTestSrcSet.name }.kotlin.srcDirs,
+            project.sourceSets.first { it.name == statisticsTestSrcSet.name }.kotlin.srcDirs
+        )
+        testResources.from(
+            project.sourceSets.first { it.name == orderTestSrcSet.name }.resources.srcDirs,
+            project.sourceSets.first { it.name == inventoryTestSrcSet.name }.resources.srcDirs,
+            project.sourceSets.first { it.name == statisticsTestSrcSet.name }.resources.srcDirs
+        )
+    }
+}
+
 
 // "Group" for spring-boot-starter so that they can be imported to other sourcesets than main.
 fun DependencyHandler.springBootStarterDependency(configurationName: String) {
     add(configurationName, "org.springframework.boot:spring-boot-starter")
 }
 
+// TODO pwestlin: versions.toml
+
+// TODO pwestlin:  Create more "DependencyHandler.foo" for convenience configurating tests
+
 dependencies {
     springBootStarterDependency("implementation")
     //implementation()
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation(sourceSets.named(orderSrcSet).get().output)
+    implementation(orderSrcSet.output)
 
     // Needed for Spring so it can find Spring beans in inventorySrcSet.
-    runtimeOnly(sourceSets.named(inventorySrcSet).get().output)
+    runtimeOnly(inventorySrcSet.output)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("io.mockk:mockk:1.13.16")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:5.9.1")
+    //testImplementation("io.kotest:kotest-assertions-core-jvm:5.9.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    springBootStarterDependency("${orderSrcSet}Implementation")
-    springBootStarterDependency("${inventorySrcSet}Implementation")
-    springBootStarterDependency("${statisticsSrcSet}Implementation")
+    springBootStarterDependency("${orderSrcSet.name}Implementation")
+    springBootStarterDependency("${inventorySrcSet.name}Implementation")
+    springBootStarterDependency("${statisticsSrcSet.name}Implementation")
 
-    "${inventorySrcSet}Implementation"(sourceSets.named(orderSrcSet).get().output)
-    "${inventorySrcSet}Implementation"(sourceSets.named(statisticsSrcSet).get().output)
+    "${inventorySrcSet.name}Implementation"(orderSrcSet.output)
+    "${inventorySrcSet.name}Implementation"(statisticsSrcSet.output)
+    "${orderSrcSet.name}Implementation"(statisticsSrcSet.output)
 
-    "${orderSrcSet}Implementation"(sourceSets.named(statisticsSrcSet).get().output)
+    springBootStarterDependency("${orderSrcSet.name}-testImplementation")
+    //"${orderTestSrcSet.name}Implementation"(orderSrcSet.output)
+    "${orderTestSrcSet.name}Implementation"("org.springframework.boot:spring-boot-starter-test")
+    "${orderTestSrcSet.name}Implementation"("io.mockk:mockk:1.13.16")
+}
+
+
+/*
+val integrationTestCompilation = kotlin.target.compilations.create("integrationTest") {
+    associateWith(kotlin.target.compilations.getByName("main"))
+}
+*/
+
+kotlin.target.compilations.getByName(orderTestSrcSet.name) {
+    associateWith(kotlin.target.compilations.getByName(orderSrcSet.name))
 }
 
 // Tests should recognize internal classes/functions/stuff from other modules.
@@ -72,6 +117,14 @@ kotlin {
     }
 }
 
+tasks.register("all-tests") {
+    dependsOn("test", "order-test")
+}
+
+tasks.register<Test>("order-test") {
+    testClassesDirs = orderTestSrcSet.output.classesDirs
+}
+
 /**
  * Runs unit tests and prints a report.
  */
@@ -83,7 +136,10 @@ tasks.withType<Test> {
      */
     addTestListener(
         object : TestListener {
-            override fun beforeTest(p0: TestDescriptor?) = Unit
+            override fun beforeTest(p0: TestDescriptor) {
+                println(p0.displayName)
+            }
+
             override fun beforeSuite(p0: TestDescriptor?) = Unit
             override fun afterTest(desc: TestDescriptor, result: TestResult) = Unit
             override fun afterSuite(desc: TestDescriptor, result: TestResult) {
@@ -135,12 +191,5 @@ tasks.register("printSourceSetInformation") {
             }
             println()
         }
-    }
-}
-
-idea {
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = true
     }
 }
