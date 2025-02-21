@@ -7,7 +7,7 @@ import nu.westlin.gradle.springgradlemultiplesourcesets.order.OrderCompleted
 import nu.westlin.gradle.springgradlemultiplesourcesets.order.OrderId
 import org.junit.jupiter.api.Test
 
-@Suppress("invisible_reference", "invisible_member")
+@Suppress("invisible_reference") // <- Because of a bug in IntelliJ...
 class DefaultInventoryManagementTest {
 
     private val inventoryRepository: DefaultInventoryRepository = mockk()
