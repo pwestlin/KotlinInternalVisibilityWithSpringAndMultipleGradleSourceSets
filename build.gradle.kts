@@ -42,7 +42,7 @@ idea {
         isDownloadJavadoc = true
         isDownloadSources = true
 
-        // To get IntelliJ to mark "order-test" as a "test source" and not a "source"..
+        // To get IntelliJ to mark "order-test" etc as a "test source" and not a "source"..
         testSources.from(
             project.sourceSets.first { it.name == orderTestSrcSet.name }.kotlin.srcDirs,
             project.sourceSets.first { it.name == inventoryTestSrcSet.name }.kotlin.srcDirs,
@@ -117,12 +117,20 @@ kotlin {
     }
 }
 
-tasks.register("all-tests") {
-    dependsOn("test", "order-test")
+tasks.register<Test>(orderTestSrcSet.name) {
+    testClassesDirs = orderTestSrcSet.output.classesDirs
 }
 
-tasks.register<Test>("order-test") {
-    testClassesDirs = orderTestSrcSet.output.classesDirs
+tasks.register<Test>(inventoryTestSrcSet.name) {
+    testClassesDirs = inventoryTestSrcSet.output.classesDirs
+}
+
+tasks.register<Test>(statisticsTestSrcSet.name) {
+    testClassesDirs = statisticsTestSrcSet.output.classesDirs
+}
+
+tasks.register("all-tests") {
+    dependsOn("test", orderTestSrcSet.name, inventoryTestSrcSet.name, statisticsTestSrcSet.name)
 }
 
 /**
